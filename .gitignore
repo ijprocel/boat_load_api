@@ -1,0 +1,4 @@
+testbed*
+*.odt
+*.zip
+node_modules/*

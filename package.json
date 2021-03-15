@@ -1,0 +1,25 @@
+{
+  "name": "ignacio-oauth20-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "client.js",
+  "scripts": {
+    "start": "node client.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ignacio Procel",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/datastore": "^6.2.0",
+    "axios": "^0.21.0",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "express-handlebars": "^5.2.0",
+    "express-jwt": "^6.0.0",
+    "express-openid-connect": "^2.0.0",
+    "express-session": "^1.17.1",
+    "google-gax": "^2.9.2",
+    "json-to-html": "^0.1.2",
+    "jwks-rsa": "^1.6.0"
+  }
+}
