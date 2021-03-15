@@ -1,0 +1,5360 @@
+{
+	"info": {
+		"_postman_id": "c287880b-74eb-4599-85af-a58e53c45135",
+		"name": "proceli_project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Invalid Boat Operation 405",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"405 status code\", function () {",
+							"    pm.response.to.have.status(405);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/boats",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invalid Load Operation 405",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"405 status code\", function () {",
+							"    pm.response.to.have.status(405);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/loads",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Users 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"",
+							"if (resp.length > 0){",
+							"    if (resp[resp.length - 1].next){",
+							"        pm.environment.set(\"owner_2_next_boats\", resp[resp.length - 1].next);",
+							"    }",
+							"}",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"At least one user\", function(){",
+							"   pm.expect(Object.keys(pm.response.json()).length).to.be.at.least(1);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/users",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Boat 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"owner_1_boat_1\", pm.response.json()[\"id\"]);",
+							"pm.environment.set(\"owner_1_id\", pm.response.json()[\"owner\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Constitution\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"Frigate\");",
+							"    pm.expect(pm.response.json()[\"length\"]).to.eq(300);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/boats/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});",
+							"",
+							"pm.environment.set(\"owner_1_boat_1_name\", pm.response.json()[\"name\"]);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Constitution\",\n  \"type\": \"Frigate\",\n  \"length\": 300\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/boats",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Create Boat 201 Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"owner_1_boat_2\", pm.response.json()[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Monitor\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"Frigate\");",
+							"    pm.expect(pm.response.json()[\"length\"]).to.eq(300);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/boats/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Monitor\",\n  \"type\": \"Frigate\",\n  \"length\": 300\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/boats",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Create Boat 201 Copy 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"owner_1_boat_3\", pm.response.json()[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Nimitz\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"Frigate\");",
+							"    pm.expect(pm.response.json()[\"length\"]).to.eq(300);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/boats/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Nimitz\",\n  \"type\": \"Frigate\",\n  \"length\": 300\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/boats",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Create Boat 201 Copy 3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"owner_1_boat_4\", pm.response.json()[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Ohio\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"Frigate\");",
+							"    pm.expect(pm.response.json()[\"length\"]).to.eq(300);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/boats/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Ohio\",\n  \"type\": \"Frigate\",\n  \"length\": 300\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/boats",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Create Boat 201 Copy 4",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"owner_1_boat_5\", pm.response.json()[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Ticonderoga\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"Destroyer\");",
+							"    pm.expect(pm.response.json()[\"length\"]).to.eq(180);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/boats/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Ticonderoga\",\n  \"type\": \"Destroyer\",\n  \"length\": 180\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/boats",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Create Boat 201 Copy 5",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"owner_1_boat_6\", pm.response.json()[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Missouri\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"Battleship\");",
+							"    pm.expect(pm.response.json()[\"length\"]).to.eq(900);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/boats/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Missouri\",\n  \"type\": \"Battleship\",\n  \"length\": 900\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/boats",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Owner 2 Boats 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"",
+							"if (resp.length > 0){",
+							"    if (resp[resp.length - 1].next){",
+							"        pm.environment.set(\"owner_2_next_boats\", resp[resp.length - 1].next);",
+							"    }",
+							"}",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"No boats yet\", function(){",
+							"   pm.expect(Object.keys(pm.response.json()).length).to.equal(0);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/boats",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Owner 2 Create Boat 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"owner_2_boat_1\", pm.response.json()[\"id\"]);",
+							"pm.environment.set(\"owner_2_id\", pm.response.json()[\"owner\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"United States\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"Ocean Liner\");",
+							"    pm.expect(pm.response.json()[\"length\"]).to.eq(990);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/boats/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"United States\",\n  \"type\": \"Ocean Liner\",\n  \"length\": 990\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/boats",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Owner 2 Create Boat 201 Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"owner_2_boat_2\", pm.response.json()[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Queen Elizabeth\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"Ocean Liner\");",
+							"    pm.expect(pm.response.json()[\"length\"]).to.eq(1031);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/boats/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Queen Elizabeth\",\n  \"type\": \"Ocean Liner\",\n  \"length\": 1031\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/boats",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Owner 2 Create Incomplete Boat 400",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"400 status code\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Queen Elizabeth\",\n  \"type\": \"Ocean Liner\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/boats",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Create Boat 401 Bad JWT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bad_jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Constitution\",\n  \"type\": \"Frigate\",\n  \"length\": 300\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/boats",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Create Boat 401 Missing JWT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Constitution\",\n  \"type\": \"Frigate\",\n  \"length\": 300\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/boats",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Add Load 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"pm.environment.set(\"load_1_id\", resp[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(resp[\"weight\"]).to.eq(1000);",
+							"    pm.expect(resp[\"content\"]).to.eq(\"Diesel Fuel\");",
+							"    pm.expect(resp[\"delivery_date\"]).to.eq(\"10/25/2020\");",
+							"    pm.expect(Object.keys(resp[\"carrier\"]).length).to.eq(0);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/loads/\" + resp[\"id\"];",
+							"    pm.expect(resp[\"self\"]).to.eq(self_url);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"weight\": 1000,\r\n  \"content\": \"Diesel Fuel\",\r\n  \"delivery_date\": \"10/25/2020\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/loads",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Load 201 Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"pm.environment.set(\"load_2_id\", resp[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(resp[\"weight\"]).to.eq(1050);",
+							"    pm.expect(resp[\"content\"]).to.eq(\"Coal\");",
+							"    pm.expect(resp[\"delivery_date\"]).to.eq(\"10/21/2020\");",
+							"    pm.expect(Object.keys(resp[\"carrier\"]).length).to.eq(0);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/loads/\" + resp[\"id\"];",
+							"    pm.expect(resp[\"self\"]).to.eq(self_url);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"weight\": 1050,\r\n  \"content\": \"Coal\",\r\n  \"delivery_date\": \"10/21/2020\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/loads",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Load 201 Copy 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"pm.environment.set(\"load_3_id\", resp[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(resp[\"weight\"]).to.eq(1100);",
+							"    pm.expect(resp[\"content\"]).to.eq(\"Bananas\");",
+							"    pm.expect(resp[\"delivery_date\"]).to.eq(\"10/20/2020\");",
+							"    pm.expect(Object.keys(resp[\"carrier\"]).length).to.eq(0);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/loads/\" + resp[\"id\"];",
+							"    pm.expect(resp[\"self\"]).to.eq(self_url);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"weight\": 1100,\r\n  \"content\": \"Bananas\",\r\n  \"delivery_date\": \"10/20/2020\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/loads",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Load 201 Copy 3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"pm.environment.set(\"load_4_id\", resp[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(resp[\"weight\"]).to.eq(1150);",
+							"    pm.expect(resp[\"content\"]).to.eq(\"Cannonballs\");",
+							"    pm.expect(resp[\"delivery_date\"]).to.eq(\"11/25/2020\");",
+							"    pm.expect(Object.keys(resp[\"carrier\"]).length).to.eq(0);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/loads/\" + resp[\"id\"];",
+							"    pm.expect(resp[\"self\"]).to.eq(self_url);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"weight\": 1150,\r\n  \"content\": \"Cannonballs\",\r\n  \"delivery_date\": \"11/25/2020\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/loads",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Load 201 Copy 4",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"pm.environment.set(\"load_5_id\", resp[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(resp[\"weight\"]).to.eq(1200);",
+							"    pm.expect(resp[\"content\"]).to.eq(\"Limes\");",
+							"    pm.expect(resp[\"delivery_date\"]).to.eq(\"12/25/2020\");",
+							"    pm.expect(Object.keys(resp[\"carrier\"]).length).to.eq(0);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/loads/\" + resp[\"id\"];",
+							"    pm.expect(resp[\"self\"]).to.eq(self_url);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"weight\": 1200,\r\n  \"content\": \"Limes\",\r\n  \"delivery_date\": \"12/25/2020\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/loads",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Load 201 Copy 5",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"pm.environment.set(\"load_6_id\", resp[\"id\"]);",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(resp[\"weight\"]).to.eq(1250);",
+							"    pm.expect(resp[\"content\"]).to.eq(\"Crude\");",
+							"    pm.expect(resp[\"delivery_date\"]).to.eq(\"1/29/2021\");",
+							"    pm.expect(Object.keys(resp[\"carrier\"]).length).to.eq(0);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/loads/\" + resp[\"id\"];",
+							"    pm.expect(resp[\"self\"]).to.eq(self_url);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"weight\": 1250,\r\n  \"content\": \"Crude\",\r\n  \"delivery_date\": \"1/29/2021\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/loads",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Incomplete Load 400",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"400 status code\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"weight\": 1000,\r\n  \"content\": \"Diesel Fuel\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/loads",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Load Wrong Accept 406",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "image/jpeg"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"weight\": 1000,\r\n  \"content\": \"Diesel Fuel\",\r\n  \"delivery_date\": \"10/25/2020\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/loads",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Owner 1's Single Boat 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Constitution\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"Frigate\");",
+							"    pm.expect(pm.response.json()[\"length\"]).to.eq(300);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/boats/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Missing JWT Get Owner 1's Single Boat 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Bad JWT Get Owner 1's Single Boat 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bad_jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Owner 2 get Owner 1's Single Boat 403",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Owner 1's Nonexistent Boat 404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{invalid_boat_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{invalid_boat_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Boat Wrong Accept 406",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "image/jpeg"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get First Boats 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"",
+							"if (resp.length > 0){",
+							"    if (resp[resp.length - 1].next){",
+							"        pm.environment.set(\"next_boats\", resp[resp.length - 1].next);",
+							"    }",
+							"}",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"At least one boat exists\", function(){",
+							"   pm.expect(Object.keys(pm.response.json()).length).to.be.at.least(1);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/boats",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Missing JWT Get Next Boats 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{next_boats}}",
+					"host": [
+						"{{next_boats}}"
+					],
+					"query": [
+						{
+							"key": "next",
+							"value": "1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Bad JWT Get Next Boats 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bad_jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{next_boats}}",
+					"host": [
+						"{{next_boats}}"
+					],
+					"query": [
+						{
+							"key": "next",
+							"value": "1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Next Boats 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"if (resp.length > 0){",
+							"    if (resp[resp.length - 1].next){",
+							"        pm.environment.set(\"next_boats\", resp[resp.length - 1].next);",
+							"    }",
+							"}",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"At least one boat exists\", function(){",
+							"   pm.expect(Object.keys(pm.response.json()).length).to.be.at.least(1);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{next_boats}}",
+					"host": [
+						"{{next_boats}}"
+					],
+					"query": [
+						{
+							"key": "next",
+							"value": "1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Single Load 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(resp[\"weight\"]).to.eq(1000);",
+							"    pm.expect(resp[\"content\"]).to.eq(\"Diesel Fuel\");",
+							"    pm.expect(resp[\"delivery_date\"]).to.eq(\"10/25/2020\");",
+							"    pm.expect(Object.keys(resp[\"carrier\"]).length).to.eq(0);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/loads/\" + resp[\"id\"];",
+							"    pm.expect(resp[\"self\"]).to.eq(self_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/loads/{{load_1_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads",
+						"{{load_1_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Non-existent Load 404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/loads/{{invalid_boat_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads",
+						"{{invalid_boat_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Load Wrong Accept 406",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "image/jpeg"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/loads/{{load_1_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads",
+						"{{load_1_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get First Loads 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"",
+							"if (resp.length > 0){",
+							"    if (resp[resp.length - 1].next){",
+							"        pm.environment.set(\"next_loads\", resp[resp.length - 1].next);",
+							"    }",
+							"}",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"At least one load exists\", function(){",
+							"   pm.expect(Object.keys(pm.response.json()).length).to.be.at.least(1);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/loads",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Next Loads 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"",
+							"if (resp.length > 0){",
+							"    if (resp[resp.length - 1].next){",
+							"        pm.environment.set(\"next_loads\", resp[resp.length - 1].next);",
+							"    }",
+							"}",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"At least one load exists\", function(){",
+							"   pm.expect(Object.keys(pm.response.json()).length).to.be.at.least(1);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{next_loads}}",
+					"host": [
+						"{{next_loads}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Loads Wrong Accept 406",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "image/jpeg"
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/loads",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Owner 1 Update Own Boat 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Abe Lincoln\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"Aircraft Carrier\");",
+							"    pm.expect(pm.response.json()[\"length\"]).to.eq(1100);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/boats/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});",
+							"",
+							"pm.environment.set(\"owner_1_boat_1_name\", pm.response.json()[\"name\"]);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Abe Lincoln\",\n  \"type\": \"Aircraft Carrier\",\n  \"length\": 1100\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Owner 1 Incomplete Update Own Boat 400",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"400 status code\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Abe Lincoln\",\n  \"type\": \"Aircraft Carrier\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Missing JWT Update Owner 1's Boat 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Carl Vinson\",\n  \"type\": \"Aircraft Carrier\",\n  \"length\": 1100\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Bad JWT Update Owner 1's Boat 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bad_jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Carl Vinson\",\n  \"type\": \"Aircraft Carrier\",\n  \"length\": 1100\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Owner 2 Update Owner 1's Boat 403",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Carl Vinson\",\n  \"type\": \"Aircraft Carrier\",\n  \"length\": 1100\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Update Owner 1's Nonexistent Boat 404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Carl Vinson\",\n  \"type\": \"Aircraft Carrier\",\n  \"length\": 1100\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/boats/{{invalid_boat_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{invalid_boat_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Full Update Single Load 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(resp[\"weight\"]).to.eq(1300);",
+							"    pm.expect(resp[\"content\"]).to.eq(\"Anthracite Coal\");",
+							"    pm.expect(resp[\"delivery_date\"]).to.eq(\"10/22/2020\");",
+							"    pm.expect(Object.keys(resp[\"carrier\"]).length).to.eq(0);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/loads/\" + resp[\"id\"];",
+							"    pm.expect(resp[\"self\"]).to.eq(self_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"weight\": 1300,\n  \"content\": \"Anthracite Coal\",\n  \"delivery_date\": \"10/22/2020\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/loads/{{load_1_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads",
+						"{{load_1_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Incomplete Update Single Load 400",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"400 status code\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"weight\": 1350,\n  \"content\": \"Bituminous Coal\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/loads/{{load_1_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads",
+						"{{load_1_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Full Update Non-existent Load 404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"weight\": 1300,\n  \"content\": \"Anthracite Coal\",\n  \"delivery_date\": \"10/22/2020\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/loads/{{invalid_boat_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads",
+						"{{invalid_boat_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Full Update Load Wrong Accept 406",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "image/jpeg"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"weight\": 1000,\r\n  \"content\": \"Diesel Fuel\",\r\n  \"delivery_date\": \"10/25/2020\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/loads/{{load_1_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads",
+						"{{load_1_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Owner 1 Update Own Boat 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.eq(\"Gerald Ford\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.eq(\"Aircraft Carrier\");",
+							"    pm.expect(pm.response.json()[\"length\"]).to.eq(1100);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/boats/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.eq(self_url);",
+							"});",
+							"",
+							"pm.environment.set(\"owner_1_boat_1_name\", pm.response.json()[\"name\"]);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Gerald Ford\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Bad JWT Update Owner 1's Boat 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bad_jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Carl Vinson\",\n  \"type\": \"Aircraft Carrier\",\n  \"length\": 1100\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Missing JWT Update Owner 1's Boat 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Carl Vinson\",\n  \"type\": \"Aircraft Carrier\",\n  \"length\": 1100\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Owner 2 Update Owner 1's Boat 403",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Carl Vinson\",\n  \"type\": \"Aircraft Carrier\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Update Owner 1's Nonexistent Boat 404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Carl Vinson\",\n  \"type\": \"Aircraft Carrier\",\n  \"length\": 1100\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/boats/{{invalid_boat_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{invalid_boat_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Partial Update Single Load 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"",
+							"pm.test(\"201 status code\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(resp[\"weight\"]).to.eq(1350);",
+							"    pm.expect(resp[\"content\"]).to.eq(\"Bituminous Coal\");",
+							"    pm.expect(resp[\"delivery_date\"]).to.eq(\"10/22/2020\");",
+							"    pm.expect(Object.keys(resp[\"carrier\"]).length).to.eq(0);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/loads/\" + resp[\"id\"];",
+							"    pm.expect(resp[\"self\"]).to.eq(self_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"weight\": 1350,\n  \"content\": \"Bituminous Coal\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/loads/{{load_1_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads",
+						"{{load_1_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Partial Update Non-existent Load 404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"content\": \"Anthracite Coal\",\n  \"delivery_date\": \"10/22/2020\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/loads/{{invalid_boat_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads",
+						"{{invalid_boat_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Partial Update Load Wrong Accept 406",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"406 status code\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "image/jpeg"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"weight\": 1000,\r\n  \"content\": \"Diesel Fuel\",\r\n  \"delivery_date\": \"10/25/2020\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_url}}/loads/{{load_1_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads",
+						"{{load_1_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Load to Boat 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}/loads/{{load_1_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}",
+						"loads",
+						"{{load_1_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Check Boat Has Load 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(resp[\"name\"]).to.eq(\"Gerald Ford\");",
+							"    pm.expect(resp[\"type\"]).to.eq(\"Aircraft Carrier\");",
+							"    pm.expect(resp[\"length\"]).to.eq(1100);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/boats/\" + resp[\"id\"];",
+							"    pm.expect(resp[\"self\"]).to.eq(self_url);",
+							"",
+							"    pm.expect(resp[\"loads\"].length).to.eq(1);",
+							"    pm.expect(resp[\"loads\"][0].id).to.eq(pm.environment.get(\"load_1_id\"));",
+							"    const load_url = pm.environment.get(\"app_url\") + \"/loads/\" + pm.environment.get(\"load_1_id\");",
+							"    pm.expect(resp[\"loads\"][0].self).to.eq(load_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Check Load Has Boat 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(resp[\"weight\"]).to.eq(1350);",
+							"    pm.expect(resp[\"content\"]).to.eq(\"Bituminous Coal\");",
+							"    pm.expect(resp[\"delivery_date\"]).to.eq(\"10/22/2020\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/loads/\" + resp[\"id\"];",
+							"    pm.expect(resp[\"self\"]).to.eq(self_url);",
+							"",
+							"    pm.expect(resp[\"carrier\"].id).to.eq(pm.environment.get(\"owner_1_boat_1\"));",
+							"    pm.expect(resp[\"carrier\"].name).to.eq(pm.environment.get(\"owner_1_boat_1_name\"));",
+							"    const boat_url = pm.environment.get(\"app_url\") + \"/boats/\" + resp[\"carrier\"].id;",
+							"    pm.expect(resp[\"carrier\"].self).to.eq(boat_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/loads/{{load_1_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads",
+						"{{load_1_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Add Load to More Than One Boat 403",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_2}}/loads/{{load_1_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_2}}",
+						"loads",
+						"{{load_1_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Check Original Boat Still Has Load 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(resp[\"name\"]).to.eq(\"Gerald Ford\");",
+							"    pm.expect(resp[\"type\"]).to.eq(\"Aircraft Carrier\");",
+							"    pm.expect(resp[\"length\"]).to.eq(1100);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/boats/\" + resp[\"id\"];",
+							"    pm.expect(resp[\"self\"]).to.eq(self_url);",
+							"",
+							"    pm.expect(resp[\"loads\"].length).to.eq(1);",
+							"    pm.expect(resp[\"loads\"][0].id).to.eq(pm.environment.get(\"load_1_id\"));",
+							"    const load_url = pm.environment.get(\"app_url\") + \"/loads/\" + pm.environment.get(\"load_1_id\");",
+							"    pm.expect(resp[\"loads\"][0].self).to.eq(load_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Check Load Has Original Boat 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(resp[\"weight\"]).to.eq(1350);",
+							"    pm.expect(resp[\"content\"]).to.eq(\"Bituminous Coal\");",
+							"    pm.expect(resp[\"delivery_date\"]).to.eq(\"10/22/2020\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/loads/\" + resp[\"id\"];",
+							"    pm.expect(resp[\"self\"]).to.eq(self_url);",
+							"",
+							"    pm.expect(resp[\"carrier\"].id).to.eq(pm.environment.get(\"owner_1_boat_1\"));",
+							"    pm.expect(resp[\"carrier\"].name).to.eq(pm.environment.get(\"owner_1_boat_1_name\"));",
+							"    const boat_url = pm.environment.get(\"app_url\") + \"/boats/\" + resp[\"carrier\"].id;",
+							"    pm.expect(resp[\"carrier\"].self).to.eq(boat_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/loads/{{load_1_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads",
+						"{{load_1_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Add Non-existent Load to Boat 404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_2}}/loads/{{invalid_boat_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_2}}",
+						"loads",
+						"{{invalid_boat_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Check No Load Added to Boat 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(resp[\"name\"]).to.eq(\"Gerald Ford\");",
+							"    pm.expect(resp[\"type\"]).to.eq(\"Aircraft Carrier\");",
+							"    pm.expect(resp[\"length\"]).to.eq(1100);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/boats/\" + resp[\"id\"];",
+							"    pm.expect(resp[\"self\"]).to.eq(self_url);",
+							"",
+							"    pm.expect(resp[\"loads\"].length).to.eq(1);",
+							"    pm.expect(resp[\"loads\"][0].id).to.eq(pm.environment.get(\"load_1_id\"));",
+							"    const load_url = pm.environment.get(\"app_url\") + \"/loads/\" + pm.environment.get(\"load_1_id\");",
+							"    pm.expect(resp[\"loads\"][0].self).to.eq(load_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Add Load to Non-existent Boat 404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{invalid_boat_id}}/loads/{{load_2_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{invalid_boat_id}}",
+						"loads",
+						"{{load_2_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Add Non-existent Load to Non-existent Boat 404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{invalid_boat_id}}/loads/{{invalid_boat_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{invalid_boat_id}}",
+						"loads",
+						"{{invalid_boat_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Check Load Has Original Boat 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(resp[\"weight\"]).to.eq(1350);",
+							"    pm.expect(resp[\"content\"]).to.eq(\"Bituminous Coal\");",
+							"    pm.expect(resp[\"delivery_date\"]).to.eq(\"10/22/2020\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/loads/\" + resp[\"id\"];",
+							"    pm.expect(resp[\"self\"]).to.eq(self_url);",
+							"",
+							"    pm.expect(resp[\"carrier\"].id).to.eq(pm.environment.get(\"owner_1_boat_1\"));",
+							"    pm.expect(resp[\"carrier\"].name).to.eq(pm.environment.get(\"owner_1_boat_1_name\"));",
+							"    const boat_url = pm.environment.get(\"app_url\") + \"/boats/\" + resp[\"carrier\"].id;",
+							"    pm.expect(resp[\"carrier\"].self).to.eq(boat_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/loads/{{load_1_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads",
+						"{{load_1_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Check Load Has Original Boat 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(resp[\"weight\"]).to.eq(1350);",
+							"    pm.expect(resp[\"content\"]).to.eq(\"Bituminous Coal\");",
+							"    pm.expect(resp[\"delivery_date\"]).to.eq(\"10/22/2020\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/loads/\" + resp[\"id\"];",
+							"    pm.expect(resp[\"self\"]).to.eq(self_url);",
+							"",
+							"    pm.expect(resp[\"carrier\"].id).to.eq(pm.environment.get(\"owner_1_boat_1\"));",
+							"    pm.expect(resp[\"carrier\"].name).to.eq(pm.environment.get(\"owner_1_boat_1_name\"));",
+							"    const boat_url = pm.environment.get(\"app_url\") + \"/boats/\" + resp[\"carrier\"].id;",
+							"    pm.expect(resp[\"carrier\"].self).to.eq(boat_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/loads/{{load_1_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads",
+						"{{load_1_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Remove Load From Boat 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}/loads/{{load_1_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}",
+						"loads",
+						"{{load_1_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Check Boat Does Not Have Load 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(resp[\"name\"]).to.eq(\"Gerald Ford\");",
+							"    pm.expect(resp[\"type\"]).to.eq(\"Aircraft Carrier\");",
+							"    pm.expect(resp[\"length\"]).to.eq(1100);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/boats/\" + resp[\"id\"];",
+							"    pm.expect(resp[\"self\"]).to.eq(self_url);",
+							"",
+							"    pm.expect(resp[\"loads\"].length).to.eq(0);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Check Load Does Not Have Boat 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(resp[\"weight\"]).to.eq(1350);",
+							"    pm.expect(resp[\"content\"]).to.eq(\"Bituminous Coal\");",
+							"    pm.expect(resp[\"delivery_date\"]).to.eq(\"10/22/2020\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/loads/\" + resp[\"id\"];",
+							"    pm.expect(resp[\"self\"]).to.eq(self_url);",
+							"",
+							"    pm.expect(Object.keys(resp[\"carrier\"]).length).to.eq(0);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/loads/{{load_1_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads",
+						"{{load_1_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Remove Un-carried Load From Boat 403",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}/loads/{{load_1_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}",
+						"loads",
+						"{{load_1_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Remove Non-existent Load From Boat 404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}/loads/{{invalid_boat_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}",
+						"loads",
+						"{{invalid_boat_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Remove Load From Non-existent Boat 404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{invalid_boat_id}}/loads/{{load_1_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{invalid_boat_id}}",
+						"loads",
+						"{{load_1_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Remove Non-existent Load From Non-existent Boat 404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{invalid_boat_id}}/loads/{{invalid_boat_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{invalid_boat_id}}",
+						"loads",
+						"{{invalid_boat_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Add Load Back to Boat 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}/loads/{{load_1_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}",
+						"loads",
+						"{{load_1_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Added Load 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/loads/{{load_1_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads",
+						"{{load_1_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Confirm Deletion 404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/loads/{{load_1_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads",
+						"{{load_1_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Confirm Load Removed From Boat 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(resp[\"name\"]).to.eq(\"Gerald Ford\");",
+							"    pm.expect(resp[\"type\"]).to.eq(\"Aircraft Carrier\");",
+							"    pm.expect(resp[\"length\"]).to.eq(1100);",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/boats/\" + resp[\"id\"];",
+							"    pm.expect(resp[\"self\"]).to.eq(self_url);",
+							"",
+							"    pm.expect(resp[\"loads\"].length).to.eq(0);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Non-existent Load 404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/loads/{{load_1_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads",
+						"{{load_1_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Add New Load to Boat 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}/loads/{{load_2_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}",
+						"loads",
+						"{{load_2_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Owner 1 Delete Own Boat 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Confirm Deletion 404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Confirm Load Does Not Have Boat 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const resp = pm.response.json();",
+							"",
+							"pm.test(\"200 status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(resp[\"weight\"]).to.eq(1050);",
+							"    pm.expect(resp[\"content\"]).to.eq(\"Coal\");",
+							"    pm.expect(resp[\"delivery_date\"]).to.eq(\"10/21/2020\");",
+							"    const self_url = pm.environment.get(\"app_url\") + \"/loads/\" + resp[\"id\"];",
+							"    pm.expect(resp[\"self\"]).to.eq(self_url);",
+							"",
+							"    pm.expect(Object.keys(resp[\"carrier\"]).length).to.eq(0);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/loads/{{load_2_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads",
+						"{{load_2_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Bad JWT Delete Boat 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bad_jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_2}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_2}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Missing JWT Delete Boat 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 status code\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_2}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_2}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Owner 2 Delete Owner 1 Boat 403",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_2}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_2}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Owner 1 Delete Owner 2 Boat 403",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_2_boat_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_2_boat_1}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Owner 1 Delete Non-existent Boat 404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_1}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Owner 1 Delete Own Boat 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_2}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_2}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Owner 1 Delete Own Boat 204 Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_3}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_3}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Owner 1 Delete Own Boat 204 Copy 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_4}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_4}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Owner 1 Delete Own Boat 204 Copy 3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_5}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_5}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Owner 1 Delete Own Boat 204 Copy 4",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_1_boat_6}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_1_boat_6}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Owner 2 Delete Own Boat 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_2_boat_1}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_2_boat_1}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Owner 2 Delete Own Boat 204 Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/boats/{{owner_2_boat_2}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"boats",
+						"{{owner_2_boat_2}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Single Load 204 Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/loads/{{load_2_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads",
+						"{{load_2_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Single Load 204 Copy 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/loads/{{load_3_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads",
+						"{{load_3_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Single Load 204 Copy 3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/loads/{{load_4_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads",
+						"{{load_4_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Single Load 204 Copy 4",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/loads/{{load_5_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads",
+						"{{load_5_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Single Load 204 Copy 5",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{app_url}}/loads/{{load_6_id}}",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"loads",
+						"{{load_6_id}}"
+					]
+				},
+				"description": "A valid request to create a boat."
+			},
+			"response": []
+		}
+	]
+}
